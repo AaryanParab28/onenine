@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import StoneScroll from '@/components/StoneScroll';
 import AntiGravityParallax from '@/components/AntiGravityParallax';
 import PhilosophyBeliefs from '@/components/PhilosophyBeliefs';
+import FinalReveal from '@/components/FinalReveal';
 
 // Navigation items
 const NAV_ITEMS = ['Haus', 'Experiments', 'Philosophy', 'Contact'];
@@ -240,27 +241,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="border-t border-white/[0.05] py-12">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-white/20 text-sm">
-              © 2026 OneNine Innovation Haus
-            </p>
-            <div className="flex gap-8">
-              {NAV_ITEMS.map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-white/20 text-sm hover:text-white/50 transition-colors duration-300"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-        </footer>
       </section>
+
+      {/* Final Reveal - Logo & Contact */}
+      <FinalReveal />
     </main>
   );
 }
