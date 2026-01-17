@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import StoneScroll from '@/components/StoneScroll';
+import AntiGravityParallax from '@/components/AntiGravityParallax';
 
 // Navigation items
 const NAV_ITEMS = ['Haus', 'Experiments', 'Philosophy', 'Contact'];
@@ -10,6 +11,7 @@ const NAV_ITEMS = ['Haus', 'Experiments', 'Philosophy', 'Contact'];
 export default function Home() {
   const [scrollStarted, setScrollStarted] = useState(false);
   const [scrollComplete, setScrollComplete] = useState(false);
+  const [parallaxActive, setParallaxActive] = useState(true);
 
   const { scrollY } = useScroll();
 
@@ -28,18 +30,39 @@ export default function Home() {
   const heroScale = useTransform(scrollY, [0, 400], [1, 0.95]);
   const heroY = useTransform(scrollY, [0, 400], [0, -50]);
 
-  // Detect when scrolling starts
+  // Detect when scrolling starts/stops and toggle parallax
   useEffect(() => {
     const unsubscribe = scrollY.on('change', (latest) => {
-      if (latest > 50 && !scrollStarted) {
+      // Disable parallax only when scrolling DOWN past 50px threshold
+      if (latest > 50 && parallaxActive) {
         setScrollStarted(true);
+        setParallaxActive(false);
+      }
+      // Re-enable parallax when scrolled back to top (within 5px to handle bounce)
+      if (latest <= 5 && !parallaxActive && scrollStarted) {
+        setScrollStarted(false);
+        setParallaxActive(true);
       }
     });
     return () => unsubscribe();
-  }, [scrollY, scrollStarted]);
+  }, [scrollY, scrollStarted, parallaxActive]);
+
+  // Handle scroll start from parallax component
+  const handleParallaxScrollStart = () => {
+    setParallaxActive(false);
+    setScrollStarted(true);
+  };
 
   return (
     <main className="min-h-screen bg-[#1a1a1a]">
+      {/* ========================================
+          Anti-Gravity Parallax - Before Scroll
+          ======================================== */}
+      <AntiGravityParallax
+        isActive={parallaxActive}
+        onScrollStart={handleParallaxScrollStart}
+      />
+
       {/* ========================================
           Scrollytelling Canvas - Full Screen Background
           Starts immediately, visible on homescreen
@@ -81,7 +104,8 @@ export default function Home() {
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           {/* Main Title */}
           <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-white/90 mb-8 drop-shadow-lg"
+            className="text-6xl md:text-8xl lg:text-9xl font-normal tracking-wide text-white/90 mb-8 drop-shadow-lg"
+            style={{ fontFamily: 'var(--font-vt323)' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
